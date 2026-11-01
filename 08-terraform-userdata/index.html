@@ -1,0 +1,4012 @@
+
+<!doctype html>
+<html lang="ru" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="DevOps с нуля — пособие для самостоятельного изучения">
+      
+      
+      
+      
+        <link rel="prev" href="../07-terraform-state-modules/exercises/">
+      
+      
+        <link rel="next" href="commands/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>08 · Terraform: User Data и первый проект - DevOps Handbook</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#08--terraform-user-data-и-первый-проект" class="md-skip">
+          Перейти к содержанию
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Верхний колонтитул">
+    <a href=".." title="DevOps Handbook" class="md-header__button md-logo" aria-label="DevOps Handbook" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DevOps Handbook
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              08 · Terraform: User Data и первый проект
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Тёмная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Тёмная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Поиск" placeholder="Поиск" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Поиск">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Очистить" aria-label="Очистить" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Инициализация поиска
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Навигация" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DevOps Handbook" class="md-nav__button md-logo" aria-label="DevOps Handbook" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DevOps Handbook
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Главная
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../00-setup/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Подготовка
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    00 · Подготовка
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-setup/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-setup/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Основы и AWS
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Основы и AWS
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../01-devops-intro/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · Что такое DevOps
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    01 · Что такое DevOps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-devops-intro/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-devops-intro/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../02-aws-vpc-ec2/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · AWS: VPC и EC2
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    02 · AWS: VPC и EC2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-aws-vpc-ec2/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-aws-vpc-ec2/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03-aws-cli-ec2/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · AWS CLI и жизненный цикл EC2
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    03 · AWS CLI и жизненный цикл EC2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-cli-ec2/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-cli-ec2/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04-iam-users-policies/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · IAM: пользователи и политики
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    04 · IAM: пользователи и политики
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-iam-users-policies/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-iam-users-policies/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../05-iam-roles/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · IAM: роли и instance profile
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    05 · IAM: роли и instance profile
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-iam-roles/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-iam-roles/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terraform
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Terraform
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../06-terraform-intro/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Terraform: введение
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    06 · Terraform: введение
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-terraform-intro/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-terraform-intro/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../07-terraform-state-modules/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 · Remote state и модули
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    07 · Remote state и модули
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-terraform-state-modules/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-terraform-state-modules/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 · User Data и проект
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    08 · User Data и проект
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Контейнеры и CI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Контейнеры и CI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../09-docker/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 · Docker
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    09 · Docker
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-docker/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-docker/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../10-docker-compose/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 · Docker Compose
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    10 · Docker Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-docker-compose/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-docker-compose/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../11-jenkins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 · Jenkins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    11 · Jenkins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-jenkins/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-jenkins/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../12-jenkins-docker/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12 · Jenkins + Docker
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    12 · Jenkins + Docker
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-jenkins-docker/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-jenkins-docker/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../13-ansible-basics/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13 · Ansible: основы
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    13 · Ansible: основы
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-ansible-basics/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-ansible-basics/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../14-ansible-roles-deploy/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14 · Роли и деплой
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    14 · Роли и деплой
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-ansible-roles-deploy/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-ansible-roles-deploy/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../15-k8s-pods-deployments/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15 · Pod и Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    15 · Pod и Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-k8s-pods-deployments/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-k8s-pods-deployments/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../16-k8s-services-ingress/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16 · Service и Ingress
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    16 · Service и Ingress
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-k8s-services-ingress/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-k8s-services-ingress/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../17-k8s-config-secrets-rbac/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17 · ConfigMap, Secret, RBAC
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    17 · ConfigMap, Secret, RBAC
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-k8s-config-secrets-rbac/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-k8s-config-secrets-rbac/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../18-k8s-hpa/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18 · HPA
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    18 · HPA
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-k8s-hpa/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-k8s-hpa/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Справочник
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Справочник
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Типичные ошибки
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Глоссарий
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#зачем-это-нужно" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Зачем это нужно
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#концепция" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Концепция
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Концепция">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#как-работает-user-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Как работает User Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаблон-значения-из-terraform-в-скрипт" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаблон: значения из Terraform в скрипт
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#изменили-скрипт--что-с-сервером" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Изменили скрипт — что с сервером?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#проект-целиком" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Проект целиком
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#практика" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Практика
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Практика">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#шаг-1-подготовить-проект" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 1. Подготовить проект
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-2-шаблон-user-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 2. Шаблон User Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-3-модуль-http-и-user-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 3. Модуль: HTTP и User Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-4-корневой-модуль" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 4. Корневой модуль
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-5-запуск" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 5. Запуск
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-6-посмотреть-как-отработал-скрипт" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 6. Посмотреть, как отработал скрипт
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-7-изменить-страницу--новый-сервер" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 7. Изменить страницу — новый сервер
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-8-уборка" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 8. Уборка
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#вопросы-для-самопроверки" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вопросы для самопроверки
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#итоги" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Итоги
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="08--terraform-user-data-и-первый-проект">08 · Terraform: User Data и первый проект<a class="headerlink" href="#08--terraform-user-data-и-первый-проект" title="Permanent link">&para;</a></h1>
+<div class="admonition abstract">
+<p class="admonition-title">В этой главе</p>
+<p><strong>Что вы узнаете:</strong> как сервер настраивает себя сам при первом запуске (User Data и cloud-init), как передать значения из Terraform в скрипт через <code>templatefile()</code>, почему изменение User Data должно пересоздавать сервер, как отлаживать скрипт запуска. Итог главы — законченный проект: веб-сервер с nginx одной командой <code>terraform apply</code>.</p>
+<p><strong>Что нужно до начала:</strong></p>
+<ul>
+<li><a href="../07-terraform-state-modules/">Глава 07</a>: бакет <code>tf-state-&lt;account-id&gt;</code>, политика <code>terraform-state-access</code>, модуль <code>modules/ec2</code>.</li>
+<li>Задание второго уровня из <a href="../02-aws-vpc-ec2/exercises/">главы 02</a> — если делали, сравните, сколько ручных шагов исчезнет.</li>
+</ul>
+<p><strong>Эталон:</strong> готовый код этой главы лежит в репозитории пособия в <a href="https://github.com/&lt;your-github-user&gt;/devops-handbook/tree/main/project/terraform"><code>project/terraform/</code></a>.</p>
+<p><strong>Стоимость:</strong> EC2 <code>t3.micro</code> на время практики — центы. В конце — <code>terraform destroy</code>.</p>
+</div>
+<h2 id="зачем-это-нужно">Зачем это нужно<a class="headerlink" href="#зачем-это-нужно" title="Permanent link">&para;</a></h2>
+<p>После главы 07 Terraform создаёт сервер одной командой, но сервер <strong>пустой</strong>. Чтобы на нём появился сайт, вы бы сделали то же, что в главе 02:</p>
+<div class="highlight"><pre><span></span><code>terraform apply  →  ssh  →  sudo dnf install nginx  →  sudo systemctl enable --now nginx
+                 →  sudo vi /usr/share/nginx/html/index.html  →  exit
+</code></pre></div>
+<p>И повторяли бы это после каждого пересоздания сервера. Так появляются «снежинки» — серверы, настроенные руками, уникальные и невоспроизводимые.</p>
+<p><strong>User Data</strong> — скрипт, который AWS передаёт инстансу при создании, а инстанс выполняет сам при первой загрузке. Сервер рождается уже настроенным.</p>
+<h2 id="концепция">Концепция<a class="headerlink" href="#концепция" title="Permanent link">&para;</a></h2>
+<h3 id="как-работает-user-data">Как работает User Data<a class="headerlink" href="#как-работает-user-data" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant TF as terraform apply
+    participant EC2 as AWS EC2
+    participant VM as Инстанс (cloud-init)
+    TF-&gt;&gt;EC2: RunInstances(ami, type, …, user_data)
+    EC2-&gt;&gt;VM: загрузка ОС
+    Note over VM: cloud-init читает user_data&lt;br/&gt;из IMDS
+    VM-&gt;&gt;VM: #!/bin/bash … (от root)
+    VM-&gt;&gt;VM: dnf install nginx&lt;br/&gt;создать index.html&lt;br/&gt;systemctl enable --now nginx
+    Note over VM: лог: /var/log/cloud-init-output.log
+    TF--&gt;&gt;TF: Apply complete! (не ждёт скрипт)</code></pre>
+<p>Ключевые факты:</p>
+<ul>
+<li>Скрипт выполняет <strong>cloud-init</strong> — стандартный инструмент первичной настройки облачных серверов. Он есть в Amazon Linux, Ubuntu и других облачных образах.</li>
+<li>Скрипт выполняется <strong>от root</strong>, <code>sudo</code> не нужен.</li>
+<li>Выполняется <strong>один раз</strong>, при первой загрузке инстанса. При <code>reboot</code> и <code>stop/start</code> — не выполняется.</li>
+<li><code>terraform apply</code> завершается, когда инстанс <strong>запущен</strong>, а не когда скрипт <strong>отработал</strong>. Между «Apply complete» и рабочим сайтом проходит 1–2 минуты.</li>
+<li>Размер User Data ограничен 16 КБ. Для сложной настройки используют Ansible (главы 13–14) или готовые образы.</li>
+</ul>
+<h3 id="шаблон-значения-из-terraform-в-скрипт">Шаблон: значения из Terraform в скрипт<a class="headerlink" href="#шаблон-значения-из-terraform-в-скрипт" title="Permanent link">&para;</a></h3>
+<p>Скрипт удобно держать в отдельном файле и подставлять в него значения функцией <code>templatefile()</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="na">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">"${path.module}/user-data.sh.tftpl"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.name</span>
+<span class="w">  </span><span class="na">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.page_message</span>
+<span class="p">})</span>
+</code></pre></div>
+<p>В файле шаблона <code>${name}</code> и <code>${message}</code> заменит Terraform. Если bash-переменная записана с фигурными скобками (<code>${VAR}</code>), её нужно экранировать: <code>$${VAR}</code>. Без скобок (<code>$VAR</code>, <code>$(cmd)</code>) Terraform её не трогает.</p>
+<p><code>path.module</code> — путь к папке текущего модуля. Без него <code>templatefile</code> искал бы файл относительно папки, где запущен Terraform.</p>
+<h3 id="изменили-скрипт--что-с-сервером">Изменили скрипт — что с сервером?<a class="headerlink" href="#изменили-скрипт--что-с-сервером" title="Permanent link">&para;</a></h3>
+<p>Скрипт выполняется только при первой загрузке. Если поменять User Data у работающего сервера, новый скрипт <strong>не выполнится</strong>: AWS просто сохранит новое значение до следующего первого запуска, которого не будет. Сервер останется со старой настройкой, а код будет говорить другое. Это скрытый drift.</p>
+<div class="admonition example">
+<p class="admonition-title">Плохо / Хорошо</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">❌ Плохо</label><label for="__tabbed_1_2">✅ Хорошо</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_instance"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(...)</span>
+<span class="c1">  # изменили шаблон → plan: ~ update in-place (через stop/start)</span>
+<span class="c1">  # → скрипт НЕ выполнится, на сервере старая страница</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_instance"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">user_data</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(...)</span>
+<span class="w">  </span><span class="na">user_data_replace_on_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="c1">  # изменили шаблон → plan: -/+ replace</span>
+<span class="c1">  # → новый сервер, скрипт выполнился с нуля</span>
+<span class="p">}</span>
+</code></pre></div>
+Сервер <strong>неизменяемый</strong>: любое изменение настройки = новый сервер из кода. Состояния, которое живёт только на диске, нет.</p>
+</div>
+</div>
+</div>
+</div>
+<h3 id="проект-целиком">Проект целиком<a class="headerlink" href="#проект-целиком" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TB
+    subgraph Local["Ваш компьютер: tf-08/"]
+        Root["main.tf: provider + module &amp;quot;web_server&amp;quot;&lt;br/&gt;backend.tf: S3 + use_lockfile&lt;br/&gt;variables.tf / terraform.tfvars&lt;br/&gt;outputs.tf: server_url, ssh_command"]
+        Mod["modules/web-server/&lt;br/&gt;data aws_ami · key pair · SG + 3 правила&lt;br/&gt;aws_instance + user-data.sh.tftpl"]
+        Root --&gt; Mod
+    end
+    Root --&gt;|state| S3[(S3: tf-state-…/web-server/terraform.tfstate)]
+    Mod --&gt;|AWS API| AWS
+    subgraph AWS["AWS us-west-2 · default VPC"]
+        SG["Security Group web-server-sg&lt;br/&gt;22 ← ваш IP · 80 ← всем"]
+        EC2["EC2 t3.micro web-server&lt;br/&gt;AL2023 · IMDSv2 · nginx"]
+        SG --- EC2
+    end
+    User((Браузер)) --&gt;|http :80| EC2</code></pre>
+<h2 id="практика">Практика<a class="headerlink" href="#практика" title="Permanent link">&para;</a></h2>
+<h3 id="шаг-1-подготовить-проект">Шаг 1. Подготовить проект<a class="headerlink" href="#шаг-1-подготовить-проект" title="Permanent link">&para;</a></h3>
+<p>Скопируйте проект главы 07 и переименуйте модуль:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">bash</label><label for="__tabbed_2_2">PowerShell</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>-r<span class="w"> </span>tf-07<span class="w"> </span>tf-08<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>tf-08
+rm<span class="w"> </span>-rf<span class="w"> </span>.terraform<span class="w"> </span>moved.tf
+mv<span class="w"> </span>modules/ec2<span class="w"> </span>modules/web-server
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>devops-course
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">Copy-Item</span> <span class="n">-Recurse</span> <span class="n">tf</span><span class="p">-</span><span class="n">07</span> <span class="n">tf</span><span class="p">-</span><span class="n">08</span><span class="p">;</span> <span class="nb">cd </span><span class="n">tf</span><span class="p">-</span><span class="n">08</span>
+<span class="nb">Remove-Item</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="p">.</span><span class="n">terraform</span><span class="p">,</span> <span class="n">moved</span><span class="p">.</span><span class="n">tf</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+<span class="nb">Rename-Item</span> <span class="n">modules</span><span class="p">/</span><span class="n">ec2</span> <span class="n">web-server</span>
+<span class="nv">$env:AWS_PROFILE</span> <span class="p">=</span> <span class="s2">"devops-course"</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>В <code>backend.tf</code> поменяйте <code>key</code> — у нового проекта свой state:</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="na">key</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"web-server/terraform.tfstate"</span>
+</code></pre></div>
+<h3 id="шаг-2-шаблон-user-data">Шаг 2. Шаблон User Data<a class="headerlink" href="#шаг-2-шаблон-user-data" title="Permanent link">&para;</a></h3>
+<p>Создайте <code>modules/web-server/user-data.sh.tftpl</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="c1"># Выполняется один раз, при первом запуске инстанса, от root.</span>
+<span class="c1"># Лог: /var/log/cloud-init-output.log</span>
+<span class="nb">set</span><span class="w"> </span>-euxo<span class="w"> </span>pipefail
+
+dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>nginx
+
+<span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>http://169.254.169.254/latest/api/token<span class="w"> </span>-H<span class="w"> </span><span class="s2">"X-aws-ec2-metadata-token-ttl-seconds: 300"</span><span class="k">)</span>
+<span class="nv">INSTANCE_ID</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">"X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>http://169.254.169.254/latest/meta-data/instance-id<span class="k">)</span>
+
+cat<span class="w"> </span>&gt;<span class="w"> </span>/usr/share/nginx/html/index.html<span class="w"> </span><span class="s">&lt;&lt;HTML</span>
+<span class="s">&lt;!doctype html&gt;</span>
+<span class="s">&lt;html lang="en"&gt;</span>
+<span class="s">&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;${name}&lt;/title&gt;&lt;/head&gt;</span>
+<span class="s">&lt;body style="font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 2rem;"&gt;</span>
+<span class="s">  &lt;h1&gt;${message}&lt;/h1&gt;</span>
+<span class="s">  &lt;p&gt;instance: $INSTANCE_ID&lt;/p&gt;</span>
+<span class="s">  &lt;p&gt;deployed by Terraform + User Data at $(date -u +%FT%TZ)&lt;/p&gt;</span>
+<span class="s">&lt;/body&gt;</span>
+<span class="s">&lt;/html&gt;</span>
+<span class="s">HTML</span>
+
+systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>nginx
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Строка</th>
+<th>Зачем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>set -euxo pipefail</code></td>
+<td>Остановиться на первой ошибке (<code>-e</code>), ошибка на неопределённой переменной (<code>-u</code>), печатать каждую команду в лог (<code>-x</code>), учитывать ошибки в конвейерах (<code>pipefail</code>)</td>
+</tr>
+<tr>
+<td><code>dnf install -y nginx</code></td>
+<td>Установить nginx без вопросов</td>
+</tr>
+<tr>
+<td><code>TOKEN=…</code>, <code>INSTANCE_ID=…</code></td>
+<td>Узнать ID инстанса через IMDSv2 (глава 05)</td>
+</tr>
+<tr>
+<td><code>${name}</code>, <code>${message}</code></td>
+<td>Подставит Terraform</td>
+</tr>
+<tr>
+<td><code>$INSTANCE_ID</code>, <code>$(date …)</code></td>
+<td>Подставит bash на сервере</td>
+</tr>
+<tr>
+<td><code>systemctl enable --now</code></td>
+<td>Запустить сейчас и включить автозапуск</td>
+</tr>
+</tbody>
+</table>
+<h3 id="шаг-3-модуль-http-и-user-data">Шаг 3. Модуль: HTTP и User Data<a class="headerlink" href="#шаг-3-модуль-http-и-user-data" title="Permanent link">&para;</a></h3>
+<p>В <code>modules/web-server/variables.tf</code> добавьте переменную:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"page_message"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Text for the nginx index page"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Hello from Terraform!"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>В <code>modules/web-server/main.tf</code>:</p>
+<ol>
+<li>Описание Security Group: <code>description = "SSH from admin IP, HTTP from anywhere"</code>.</li>
+<li>
+<p>Новое правило для HTTP рядом с правилом SSH:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_vpc_security_group_ingress_rule"</span><span class="w"> </span><span class="nv">"http"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">security_group_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_security_group.this.id</span>
+<span class="w">  </span><span class="na">description</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"HTTP from anywhere"</span>
+<span class="w">  </span><span class="na">cidr_ipv4</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.0.0.0/0"</span>
+<span class="w">  </span><span class="na">ip_protocol</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"tcp"</span>
+<span class="w">  </span><span class="na">from_port</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
+<span class="w">  </span><span class="na">to_port</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="m">80</span>
+<span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p>В <code>aws_instance.this</code> — User Data, а тег <code>Name</code> без суффикса <code>-web</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"aws_instance"</span><span class="w"> </span><span class="nv">"this"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">ami</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="nv">data.aws_ami.al2023.id</span>
+<span class="w">  </span><span class="na">instance_type</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instance_type</span>
+<span class="w">  </span><span class="na">key_name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_key_pair.this.key_name</span>
+<span class="w">  </span><span class="na">vpc_security_group_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nv">aws_security_group.this.id</span><span class="p">]</span>
+
+<span class="w">  </span><span class="na">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">"${path.module}/user-data.sh.tftpl"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.name</span>
+<span class="w">    </span><span class="na">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.page_message</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="na">user_data_replace_on_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+
+<span class="w">  </span><span class="nb">metadata_options</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">http_tokens</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"required"</span>
+<span class="w">    </span><span class="na">http_endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"enabled"</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.name</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</li>
+</ol>
+<p>В <code>modules/web-server/outputs.tf</code> добавьте <code>security_group_id</code> (пригодится для отладки):</p>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"security_group_id"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ID of the created security group"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">aws_security_group.this.id</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="шаг-4-корневой-модуль">Шаг 4. Корневой модуль<a class="headerlink" href="#шаг-4-корневой-модуль" title="Permanent link">&para;</a></h3>
+<p><code>main.tf</code> — один вызов модуля (второй <code>web2</code> из главы 07 уберите):</p>
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"web_server"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./modules/web-server"</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">var.name</span>
+<span class="w">  </span><span class="na">instance_type</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instance_type</span>
+<span class="w">  </span><span class="na">public_key_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.public_key_path</span>
+<span class="w">  </span><span class="na">ssh_cidr</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.ssh_cidr</span>
+<span class="w">  </span><span class="na">page_message</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.page_message</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>В <code>variables.tf</code> добавьте переменные <code>name</code>, <code>public_key_path</code> и <code>page_message</code>, а у <code>instance_type</code> — проверку допустимых типов:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"name"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Name prefix for all resources"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"web-server"</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"instance_type"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"EC2 instance type"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"t3.micro"</span>
+
+<span class="w">  </span><span class="nb">validation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">condition</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">([</span><span class="s2">"t3.micro", "t3.small"</span><span class="p">],</span><span class="w"> </span><span class="nv">var.instance_type</span><span class="p">)</span>
+<span class="w">    </span><span class="na">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Use t3.micro or t3.small for the course."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"public_key_path"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Path to your SSH public key (ssh-keygen -t ed25519)"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.ssh/id_ed25519.pub"</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"page_message"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Text shown on the web page"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">  </span><span class="na">default</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"Hello from Terraform!"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>outputs.tf</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"server_url"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Open in browser (nginx needs 1-2 minutes after apply)"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"http://${module.web_server.public_ip}"</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"ssh_command"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Connect via SSH"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"ssh -i ${trimsuffix(var.public_key_path, ".pub")} ec2-user@${module.web_server.public_ip}"</span>
+<span class="p">}</span>
+
+<span class="kr">output</span><span class="w"> </span><span class="nv">"instance_id"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"EC2 instance ID"</span>
+<span class="w">  </span><span class="na">value</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">module.web_server.instance_id</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Сверьтесь с эталоном в <code>project/terraform/</code>: структура и содержимое должны совпасть (кроме ваших значений в <code>backend.tf</code> и <code>terraform.tfvars</code>). В эталоне есть ещё переменная <code>install_nginx</code> и output <code>public_ip</code>: они понадобятся в главах 13–14, когда сервер будет настраивать Ansible.</p>
+<h3 id="шаг-5-запуск">Шаг 5. Запуск<a class="headerlink" href="#шаг-5-запуск" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>init
+terraform<span class="w"> </span>fmt<span class="w"> </span>-recursive
+terraform<span class="w"> </span>validate
+terraform<span class="w"> </span>plan
+</code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p><code>Plan: 6 to add, 0 to change, 0 to destroy.</code> — Key Pair, Security Group, три правила (SSH, HTTP, egress) и инстанс. У <code>aws_instance</code> в плане видны <code>user_data</code> и <code>user_data_replace_on_change = true</code>.</p>
+</div>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+instance_id = "i-0abc123def4567890"
+server_url = "http://54.x.x.x"
+ssh_command = "ssh -i ~/.ssh/id_ed25519 ec2-user@54.x.x.x"
+</code></pre></div>
+<p>Подождите 1–2 минуты: инстанс загружается и выполняет скрипт.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">macOS / Linux</label><label for="__tabbed_3_2">Windows (PowerShell)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span><span class="k">$(</span>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>server_url<span class="k">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"h1|instance"</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-s</span> <span class="p">(</span><span class="n">terraform</span> <span class="n">output</span> <span class="n">-raw</span> <span class="n">server_url</span><span class="p">)</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="s2">"h1|instance"</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Или откройте <code>server_url</code> в браузере.</p>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p>Страница с заголовком <code>Hello from Terraform!</code> и строкой <code>instance: i-0abc...</code> — тем же ID, что в output <code>instance_id</code>. Ни одной команды на сервере вы не выполняли.</p>
+<p><code>Connection refused</code> — скрипт ещё работает, подождите. Таймаут — проверьте правило HTTP в Security Group.</p>
+</div>
+<h3 id="шаг-6-посмотреть-как-отработал-скрипт">Шаг 6. Посмотреть, как отработал скрипт<a class="headerlink" href="#шаг-6-посмотреть-как-отработал-скрипт" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>ssh_command<span class="w">     </span><span class="c1"># ← скопируйте и выполните выведенную команду</span>
+</code></pre></div>
+<p>На сервере:</p>
+<div class="highlight"><pre><span></span><code>cloud-init<span class="w"> </span>status<span class="w"> </span>--long<span class="w">          </span><span class="c1"># → status: done</span>
+sudo<span class="w"> </span>tail<span class="w"> </span>-20<span class="w"> </span>/var/log/cloud-init-output.log<span class="w">   </span><span class="c1"># ← вывод вашего скрипта, каждая команда с "+" (set -x)</span>
+systemctl<span class="w"> </span>is-active<span class="w"> </span>nginx<span class="w">         </span><span class="c1"># → active</span>
+systemctl<span class="w"> </span>is-enabled<span class="w"> </span>nginx<span class="w">        </span><span class="c1"># → enabled</span>
+<span class="nb">exit</span>
+</code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p><code>cloud-init status</code> → <code>done</code> (не <code>error</code>). В логе видны строки <code>+ dnf install -y nginx</code> и <code>+ systemctl enable --now nginx</code>. Если что-то пошло не так, ответ почти всегда в этом логе.</p>
+</div>
+<p>Скрипт можно увидеть и в консоли: <strong>EC2 → инстанс → Actions → Instance settings → Edit user data</strong>.</p>
+<h3 id="шаг-7-изменить-страницу--новый-сервер">Шаг 7. Изменить страницу — новый сервер<a class="headerlink" href="#шаг-7-изменить-страницу--новый-сервер" title="Permanent link">&para;</a></h3>
+<p>Добавьте в <code>terraform.tfvars</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="na">page_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Version 2: immutable server"</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>plan
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>  # module.web_server.aws_instance.this must be replaced
+-/+ resource "aws_instance" "this" {
+      ~ id               = "i-0abc123def4567890" -&gt; (known after apply)
+      ~ public_ip        = "54.x.x.x" -&gt; (known after apply)
+      ~ user_data        = "…" -&gt; "…" # forces replacement
+        ...
+Plan: 1 to add, 0 to change, 1 to destroy.
+</code></pre></div>
+<p><code># forces replacement</code> рядом с <code>user_data</code> — это работа <code>user_data_replace_on_change</code>. Примените, подождите пару минут и откройте <strong>новый</strong> <code>server_url</code>.</p>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p>Новый IP, новый <code>instance:</code> на странице и текст <code>Version 2: immutable server</code>. Key Pair и Security Group остались прежними — пересоздан только инстанс.</p>
+</div>
+<div class="admonition quote">
+<p class="admonition-title">Реальный кейс</p>
+<p>На одном проекте User Data «на всякий случай» начинался с <code>dnf upgrade -y</code> без фиксации версий. Однажды обновление пакета изменило конфигурацию по умолчанию, и новые серверы при автомасштабировании поднимались с неработающим приложением, а старые продолжали работать. Ошибку искали полдня: «код же не менялся». Выводы: всё, что попадает на сервер, должно быть версионировано (пакеты, образы, конфиги), а User Data — короткий и предсказуемый. Для серьёзной настройки используют готовые образы (Packer, Docker) или Ansible, к которому вы придёте в главе 13.</p>
+</div>
+<h3 id="шаг-8-уборка">Шаг 8. Уборка<a class="headerlink" href="#шаг-8-уборка" title="Permanent link">&para;</a></h3>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя перед удалением</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>sts<span class="w"> </span>get-caller-identity<span class="w"> </span>--query<span class="w"> </span>Arn<span class="w"> </span>--output<span class="w"> </span>text
+terraform<span class="w"> </span>plan<span class="w"> </span>-destroy<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-1<span class="w">      </span><span class="c1"># → Plan: 0 to add, 0 to change, 6 to destroy.</span>
+</code></pre></div>
+</div>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>destroy
+</code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>state<span class="w"> </span>list<span class="w">          </span><span class="c1"># → пусто</span>
+curl<span class="w"> </span>-m<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="k">$(</span>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>server_url<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"server is gone"</span>
+aws<span class="w"> </span>ec2<span class="w"> </span>describe-instances<span class="w"> </span>--filters<span class="w"> </span><span class="s2">"Name=tag:Name,Values=web-server"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--query<span class="w"> </span><span class="s1">'Reservations[].Instances[].State.Name'</span><span class="w"> </span>--output<span class="w"> </span>text<span class="w">   </span><span class="c1"># → terminated</span>
+</code></pre></div>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Если вы заканчиваете работу с AWS совсем</p>
+<p>Бакет <code>tf-state-...</code> можно удалить, когда все проекты, чей state в нём лежит, уничтожены. Из-за versioning в бакете остаются старые версии файлов, поэтому <code>aws s3 rb --force</code> его не удалит. Проще в консоли: <strong>S3 → бакет → Empty</strong> (удаляет все версии) → <strong>Delete</strong>. Политику <code>terraform-state-access</code> удалите в IAM. Если пойдёте дальше по пособию — оставьте и то и другое.</p>
+</div>
+<h2 id="вопросы-для-самопроверки">Вопросы для самопроверки<a class="headerlink" href="#вопросы-для-самопроверки" title="Permanent link">&para;</a></h2>
+<details>
+<summary>1. Выполнится ли User Data при <code>reboot</code>? При <code>stop</code> + <code>start</code>? При <code>terraform apply -replace</code>?</summary>
+<p>При <code>reboot</code> и <code>stop/start</code> — нет: cloud-init запоминает, что для этого инстанса скрипт уже выполнен. При <code>-replace</code> — да: это новый инстанс с новым ID, для него это первая загрузка.</p>
+</details>
+<details>
+<summary>2. <code>terraform apply</code> вернул «Apply complete», а сайт не открывается. Что проверить и в каком порядке?</summary>
+<ol>
+<li>Подождать 1–2 минуты: apply не ждёт выполнения скрипта.</li>
+<li><code>curl -m 5 http://&lt;IP&gt;</code>: <code>Connection refused</code> — nginx ещё не запущен или скрипт упал; таймаут — сеть (правило HTTP в SG, публичный IP).</li>
+<li>По SSH: <code>cloud-init status --long</code>, затем <code>/var/log/cloud-init-output.log</code> — там видно, на какой команде скрипт остановился.</li>
+<li><code>systemctl status nginx</code>.</li>
+</ol>
+<p>Именно для такой отладки в скрипте стоит <code>set -x</code>: каждая выполненная команда попадает в лог.</p>
+</details>
+<details>
+<summary>3. Что сломается, если в шаблоне написать <code>echo ${HOME}</code>?</summary>
+<p>Terraform попытается подставить переменную шаблона <code>HOME</code>, которой нет в <code>templatefile(..., {name, message})</code>, и упадёт с ошибкой <code>vars map does not contain key "HOME"</code>. Нужно экранировать: <code>$${HOME}</code>, или писать без фигурных скобок: <code>$HOME</code>.</p>
+</details>
+<details>
+<summary>4. Зачем <code>user_data_replace_on_change = true</code>, если без него план показывает безопасное <code>~ update in-place</code>?</summary>
+<p>Безопасным это изменение только выглядит. User Data у существующего инстанса меняется, но скрипт не выполняется повторно, поэтому сервер остаётся со старой настройкой, а код описывает новую. Пересоздание делает поведение честным: что в коде, то и на сервере.</p>
+</details>
+<details>
+<summary>5. Почему для настройки сервера User Data подходит не всегда? Когда нужен другой инструмент?</summary>
+<ul>
+<li>Скрипт выполняется только при создании: поменять настройку <strong>работающего</strong> сервера через него нельзя.</li>
+<li>Ограничение размера 16 КБ.</li>
+<li>Bash-скрипт не идемпотентен: повторный запуск может сломать то, что уже сделано.</li>
+<li>Нет удобного способа применить изменения к десяткам серверов сразу.</li>
+</ul>
+<p>Для настройки работающих серверов используют <strong>Ansible</strong> (главы 13–14). Для неизменяемой инфраструктуры — готовые образы (Packer, AMI) или контейнеры (Docker, глава 09) с коротким User Data, который только запускает контейнер.</p>
+</details>
+<h2 id="итоги">Итоги<a class="headerlink" href="#итоги" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[x] User Data выполняется cloud-init один раз, при первой загрузке, от root</li>
+<li>[x] <code>apply</code> не ждёт скрипт; лог — <code>/var/log/cloud-init-output.log</code>, статус — <code>cloud-init status</code></li>
+<li>[x] <code>templatefile()</code> передаёт значения в скрипт; <code>$${...}</code> — экранирование bash-переменных</li>
+<li>[x] <code>user_data_replace_on_change = true</code> делает сервер неизменяемым</li>
+<li>[x] Собран проект: модуль + remote state + User Data → веб-сервер одной командой</li>
+</ul>
+<p><strong>Что дальше.</strong> Сервер с nginx — хорошо, но настоящее приложение — это Node.js, Redis, зависимости определённых версий. Ставить всё это скриптом на каждый сервер хрупко. В <a href="../09-docker/">главе 09</a> вы упакуете приложение в Docker-образ, который одинаково запускается где угодно.</p>
+<ul>
+<li>📋 <a href="commands/">Шпаргалка</a></li>
+<li>🏋️ <a href="exercises/">Задания к главе</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Нижний колонтитул" >
+        
+          
+          <a href="../07-terraform-state-modules/exercises/" class="md-footer__link md-footer__link--prev" aria-label="Назад: Задания">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Назад
+              </span>
+              <div class="md-ellipsis">
+                Задания
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="commands/" class="md-footer__link md-footer__link--next" aria-label="Вперед: Шпаргалка">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Вперед
+              </span>
+              <div class="md-ellipsis">
+                Шпаргалка
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.indexes", "navigation.footer", "navigation.top", "content.code.copy", "content.tabs.link", "search.highlight"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

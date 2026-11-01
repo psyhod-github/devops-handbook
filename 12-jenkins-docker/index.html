@@ -1,0 +1,4026 @@
+
+<!doctype html>
+<html lang="ru" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="DevOps с нуля — пособие для самостоятельного изучения">
+      
+      
+      
+      
+        <link rel="prev" href="../11-jenkins/exercises/">
+      
+      
+        <link rel="next" href="commands/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>12 · Jenkins + Docker: сборка и публикация образа - DevOps Handbook</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#12--jenkins--docker-сборка-и-публикация-образа" class="md-skip">
+          Перейти к содержанию
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Верхний колонтитул">
+    <a href=".." title="DevOps Handbook" class="md-header__button md-logo" aria-label="DevOps Handbook" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DevOps Handbook
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              12 · Jenkins + Docker: сборка и публикация образа
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Тёмная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Тёмная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Поиск" placeholder="Поиск" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Поиск">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Очистить" aria-label="Очистить" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Инициализация поиска
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Навигация" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DevOps Handbook" class="md-nav__button md-logo" aria-label="DevOps Handbook" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DevOps Handbook
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Главная
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../00-setup/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Подготовка
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    00 · Подготовка
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-setup/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-setup/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Основы и AWS
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Основы и AWS
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../01-devops-intro/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · Что такое DevOps
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    01 · Что такое DevOps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-devops-intro/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-devops-intro/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../02-aws-vpc-ec2/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · AWS: VPC и EC2
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    02 · AWS: VPC и EC2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-aws-vpc-ec2/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-aws-vpc-ec2/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03-aws-cli-ec2/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · AWS CLI и жизненный цикл EC2
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    03 · AWS CLI и жизненный цикл EC2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-cli-ec2/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-cli-ec2/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04-iam-users-policies/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · IAM: пользователи и политики
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    04 · IAM: пользователи и политики
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-iam-users-policies/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-iam-users-policies/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../05-iam-roles/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · IAM: роли и instance profile
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    05 · IAM: роли и instance profile
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-iam-roles/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-iam-roles/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terraform
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Terraform
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../06-terraform-intro/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Terraform: введение
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    06 · Terraform: введение
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-terraform-intro/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-terraform-intro/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../07-terraform-state-modules/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07 · Remote state и модули
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    07 · Remote state и модули
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-terraform-state-modules/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-terraform-state-modules/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../08-terraform-userdata/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08 · User Data и проект
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    08 · User Data и проект
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-terraform-userdata/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-terraform-userdata/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Контейнеры и CI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Контейнеры и CI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../09-docker/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09 · Docker
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    09 · Docker
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-docker/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-docker/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../10-docker-compose/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10 · Docker Compose
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    10 · Docker Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-docker-compose/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-docker-compose/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../11-jenkins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11 · Jenkins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    11 · Jenkins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-jenkins/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-jenkins/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12 · Jenkins + Docker
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    12 · Jenkins + Docker
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../13-ansible-basics/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13 · Ansible: основы
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    13 · Ansible: основы
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-ansible-basics/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-ansible-basics/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../14-ansible-roles-deploy/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14 · Роли и деплой
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    14 · Роли и деплой
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-ansible-roles-deploy/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-ansible-roles-deploy/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../15-k8s-pods-deployments/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15 · Pod и Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    15 · Pod и Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-k8s-pods-deployments/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-k8s-pods-deployments/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../16-k8s-services-ingress/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16 · Service и Ingress
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    16 · Service и Ingress
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-k8s-services-ingress/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-k8s-services-ingress/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../17-k8s-config-secrets-rbac/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17 · ConfigMap, Secret, RBAC
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    17 · ConfigMap, Secret, RBAC
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-k8s-config-secrets-rbac/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-k8s-config-secrets-rbac/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../18-k8s-hpa/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18 · HPA
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    18 · HPA
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-k8s-hpa/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Шпаргалка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-k8s-hpa/exercises/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Задания
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Справочник
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Справочник
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Типичные ошибки
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Глоссарий
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#зачем-это-нужно" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Зачем это нужно
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#концепция" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Концепция
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Концепция">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-как-код" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline как код
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#реестр-и-имя-образа" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Реестр и имя образа
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#теги-номер-сборки-и-latest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Теги: номер сборки и latest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#секреты-в-jenkins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Секреты в Jenkins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#одинарные-и-двойные-кавычки" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Одинарные и двойные кавычки
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#триггеры" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Триггеры
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#практика" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Практика
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Практика">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#шаг-1-токен-docker-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 1. Токен Docker Hub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-2-подготовить-jenkinsfile-в-своём-fork" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 2. Подготовить Jenkinsfile в своём fork
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-3-credentials-в-jenkins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 3. Credentials в Jenkins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-4-job-из-репозитория" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 4. Job из репозитория
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-5-образ-работает-где-угодно" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 5. Образ работает где угодно
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-6-сборка-по-коммиту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 6. Сборка по коммиту
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-7-откат-на-предыдущую-версию" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 7. Откат на предыдущую версию
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#шаг-8-уборка" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шаг 8. Уборка
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#вопросы-для-самопроверки" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вопросы для самопроверки
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#итоги" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Итоги
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="12--jenkins--docker-сборка-и-публикация-образа">12 · Jenkins + Docker: сборка и публикация образа<a class="headerlink" href="#12--jenkins--docker-сборка-и-публикация-образа" title="Permanent link">&para;</a></h1>
+<div class="admonition abstract">
+<p class="admonition-title">В этой главе</p>
+<p><strong>Что вы узнаете:</strong> как Jenkins берёт <code>Jenkinsfile</code> из git (<em>Pipeline script from SCM</em>), что такое реестр образов и как именуются образы, зачем тегировать образ номером сборки, как хранить секреты в Jenkins и почему внутри <code>withCredentials</code> нужны одинарные кавычки, чем Poll SCM отличается от webhook.</p>
+<p><strong>Что нужно до начала:</strong></p>
+<ul>
+<li><a href="../11-jenkins/">Глава 11</a>: Jenkins из <code>project/jenkins/</code> (остановлен, но не удалён).</li>
+<li>Ваш fork репозитория пособия на GitHub (<a href="../00-setup/">глава 00</a>).</li>
+<li>Аккаунт на <a href="https://hub.docker.com">Docker Hub</a> (бесплатный).</li>
+</ul>
+<p><strong>Стоимость:</strong> $0. AWS не нужен.</p>
+</div>
+<h2 id="зачем-это-нужно">Зачем это нужно<a class="headerlink" href="#зачем-это-нужно" title="Permanent link">&para;</a></h2>
+<p>После главы 11 Jenkins умеет выполнять шаги, но:</p>
+<ul>
+<li>pipeline хранится в настройках Jenkins, а не в git;</li>
+<li>собранный образ остаётся на машине Jenkins, и серверу или Kubernetes его не достать.</li>
+</ul>
+<p>Результат CI — <strong>артефакт</strong>, который можно развернуть где угодно. Для Docker это образ в <strong>реестре</strong> (registry). Цепочка этой главы:</p>
+<pre class="mermaid"><code>flowchart LR
+    Dev[git push] --&gt; GH[(GitHub:&lt;br/&gt;код + Jenkinsfile)]
+    GH --&gt;|Poll SCM / webhook| J[Jenkins]
+    J --&gt; B[Build] --&gt; T[Test:&lt;br/&gt;smoke /health] --&gt; P[Push]
+    P --&gt; DH[(Docker Hub:&lt;br/&gt;user/devops-bootcamp-backend:42)]
+    DH --&gt;|docker pull| S1[Сервер&lt;br/&gt;&lt;i&gt;глава 14&lt;/i&gt;]
+    DH --&gt;|docker pull| K[Kubernetes&lt;br/&gt;&lt;i&gt;глава 15&lt;/i&gt;]</code></pre>
+<h2 id="концепция">Концепция<a class="headerlink" href="#концепция" title="Permanent link">&para;</a></h2>
+<h3 id="pipeline-как-код">Pipeline как код<a class="headerlink" href="#pipeline-как-код" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Pipeline script (глава 11)</th>
+<th>Pipeline script from SCM (эта глава)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Код в настройках job</td>
+<td><code>Jenkinsfile</code> в репозитории рядом с кодом</td>
+</tr>
+<tr>
+<td>Нет истории и ревью</td>
+<td>Изменение pipeline — обычный коммит и pull request</td>
+</tr>
+<tr>
+<td>Потеряли Jenkins — потеряли pipeline</td>
+<td>Jenkins можно поднять заново за минуты</td>
+</tr>
+<tr>
+<td>Версия pipeline не связана с версией кода</td>
+<td>Ветка с новой фичей может нести и изменённую сборку</td>
+</tr>
+</tbody>
+</table>
+<p>Принцип тот же, что с Terraform: <strong>всё, что важно для проекта, — в git</strong>. Код, инфраструктура, конфигурация и процесс сборки.</p>
+<h3 id="реестр-и-имя-образа">Реестр и имя образа<a class="headerlink" href="#реестр-и-имя-образа" title="Permanent link">&para;</a></h3>
+<p><strong>Registry</strong> — хранилище образов. Docker Hub — публичный реестр по умолчанию. В компаниях используют приватные: Amazon ECR, GitHub Container Registry, GitLab Registry, Harbor.</p>
+<div class="highlight"><pre><span></span><code>docker.io/alexdev/devops-bootcamp-backend:42
+│         │       │                       │
+│         │       │                       └── тег (версия)
+│         │       └── репозиторий (имя образа)
+│         └── namespace: пользователь или организация
+└── реестр (docker.io можно не писать)
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Что происходит</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker build -t app:42 .</code></td>
+<td>Образ появился <strong>локально</strong></td>
+</tr>
+<tr>
+<td><code>docker tag app:42 alexdev/app:42</code></td>
+<td>Второе <strong>имя</strong> того же образа (копирования нет)</td>
+</tr>
+<tr>
+<td><code>docker push alexdev/app:42</code></td>
+<td>Копия ушла в реестр</td>
+</tr>
+<tr>
+<td><code>docker rmi app:42</code></td>
+<td>Удалён <strong>локально</strong>, в реестре остался</td>
+</tr>
+<tr>
+<td><code>docker pull alexdev/app:42</code></td>
+<td>Скачан на другую машину</td>
+</tr>
+</tbody>
+</table>
+<h3 id="теги-номер-сборки-и-latest">Теги: номер сборки и <code>latest</code><a class="headerlink" href="#теги-номер-сборки-и-latest" title="Permanent link">&para;</a></h3>
+<p>Pipeline ставит образу два тега:</p>
+<ul>
+<li><strong><code>:42</code></strong> (<code>BUILD_NUMBER</code>) — неизменяемая версия. Через месяц можно точно сказать, что развёрнуто, и откатиться на <code>:41</code>.</li>
+<li><strong><code>:latest</code></strong> — подвижный указатель на последнюю сборку. Удобно для экспериментов, но <strong>в продакшене не используется</strong>: <code>latest</code> сегодня и <code>latest</code> завтра — разные образы.</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Плохо / Хорошо: какую версию развернуть</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">❌ Плохо</label><label for="__tabbed_1_2">✅ Хорошо</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alexdev/devops-bootcamp-backend:latest</span>
+</code></pre></div>
+Что сейчас работает на сервере? Неизвестно. Откатиться? На что? Два сервера, запущенных в разное время, могут работать на разных версиях.</p>
+</div>
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alexdev/devops-bootcamp-backend:42</span>
+</code></pre></div>
+Версия явная, совпадает с номером сборки в Jenkins, а через неё — с коммитом. Откат — смена числа на <code>41</code>. Ещё точнее — тег из хеша коммита (<code>:a1b2c3d</code>).</p>
+</div>
+</div>
+</div>
+</div>
+<h3 id="секреты-в-jenkins">Секреты в Jenkins<a class="headerlink" href="#секреты-в-jenkins" title="Permanent link">&para;</a></h3>
+<p>Пароль Docker Hub нельзя писать в Jenkinsfile: файл лежит в git, а репозиторий публичный. Для этого есть <strong>Credentials</strong> — хранилище секретов Jenkins (зашифровано на диске controller). Jenkinsfile ссылается на секрет по <strong>ID</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">withCredentials</span><span class="o">([</span><span class="n">usernamePassword</span><span class="o">(</span>
+<span class="w">    </span><span class="nl">credentialsId:</span><span class="w"> </span><span class="s1">'docker-hub-creds'</span><span class="o">,</span><span class="w">    </span><span class="c1">// ← ID записи в Jenkins</span>
+<span class="w">    </span><span class="nl">usernameVariable:</span><span class="w"> </span><span class="s1">'DOCKER_USER'</span><span class="o">,</span><span class="w">      </span><span class="c1">// ← в эти переменные окружения</span>
+<span class="w">    </span><span class="nl">passwordVariable:</span><span class="w"> </span><span class="s1">'DOCKER_PASS'</span><span class="w">       </span><span class="c1">//   Jenkins положит значения</span>
+<span class="o">)])</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">sh</span><span class="w"> </span><span class="s1">'''</span>
+<span class="s1">        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin</span>
+<span class="s1">    '''</span>
+<span class="o">}</span>
+</code></pre></div>
+<ul>
+<li>Переменные существуют <strong>только внутри блока</strong> <code>withCredentials</code>.</li>
+<li>В Console Output значение маскируется: <code>****</code>.</li>
+<li><code>--password-stdin</code>: пароль передаётся через стандартный ввод, а не аргументом <code>-p</code>. Аргументы командной строки видны любому процессу на машине через <code>ps</code>.</li>
+</ul>
+<p>Вместо пароля Docker Hub используйте <strong>Personal Access Token</strong>: его можно ограничить по правам и отозвать, не меняя пароль аккаунта.</p>
+<h3 id="одинарные-и-двойные-кавычки">Одинарные и двойные кавычки<a class="headerlink" href="#одинарные-и-двойные-кавычки" title="Permanent link">&para;</a></h3>
+<p>В Groovy строка в двойных кавычках подставляет <code>${...}</code> <strong>до</strong> того, как команда попадёт в shell:</p>
+<div class="admonition example">
+<p class="admonition-title">Плохо / Хорошо</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">❌ Плохо</label><label for="__tabbed_2_2">✅ Хорошо</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code><span class="n">sh</span><span class="w"> </span><span class="s2">"""</span>
+<span class="s2">    echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin</span>
+<span class="s2">"""</span>
+</code></pre></div>
+Groovy вставит пароль прямо в текст скрипта. Он окажется в аргументах процесса <code>sh</code>, во временном файле скрипта и может утечь в лог. Jenkins предупредит: <code>A secret was passed to "sh" using Groovy String interpolation, which is insecure</code>.</p>
+</div>
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code><span class="n">sh</span><span class="w"> </span><span class="s1">'''</span>
+<span class="s1">    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin</span>
+<span class="s1">'''</span>
+</code></pre></div>
+Скрипт попадает в shell как есть, а <code>$DOCKER_PASS</code> shell берёт из переменной окружения, которую выставил <code>withCredentials</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<p>Правило: в <code>sh</code> используйте <code>'''</code> и <code>$VAR</code>. Двойные кавычки — только если нужна подстановка значения <strong>Groovy</strong>, и никогда для секретов.</p>
+<div class="admonition quote">
+<p class="admonition-title">Реальный кейс</p>
+<p>Разработчик в пятницу вечером торопился и вписал пароль Docker Hub прямо в Jenkinsfile, «временно». Через 10 минут после push пришло письмо от GitHub secret scanning: найден секрет в публичном репозитории. Пароль сменили, но выходные ушли на ротацию токенов во всех системах и проверку логов Docker Hub: кто успел скачать или подменить образы. С тех пор правило: секреты — только через credentials store, без исключений.</p>
+</div>
+<h3 id="триггеры">Триггеры<a class="headerlink" href="#триггеры" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Триггер</th>
+<th>Как работает</th>
+<th>Когда использовать</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Вручную</td>
+<td><strong>Build Now</strong></td>
+<td>Отладка</td>
+</tr>
+<tr>
+<td><strong>Poll SCM</strong></td>
+<td>Jenkins раз в N минут спрашивает git: «есть новый коммит?»</td>
+<td>Jenkins недоступен из интернета (как наш localhost)</td>
+</tr>
+<tr>
+<td><strong>Webhook</strong></td>
+<td>GitHub сам сообщает Jenkins о push</td>
+<td>Jenkins с публичным адресом. Мгновенно, без лишних запросов</td>
+</tr>
+<tr>
+<td>По расписанию (cron)</td>
+<td>Сборка в заданное время независимо от коммитов</td>
+<td>Ночные сборки, периодические проверки</td>
+</tr>
+</tbody>
+</table>
+<p>Расписание в Jenkins записывается в формате cron: <code>H/5 * * * *</code> — каждые 5 минут. <code>H</code> (hash) означает, что Jenkins сам выберет минуту для этого job, чтобы сотни job не стартовали одновременно в <code>:00</code>.</p>
+<h2 id="практика">Практика<a class="headerlink" href="#практика" title="Permanent link">&para;</a></h2>
+<h3 id="шаг-1-токен-docker-hub">Шаг 1. Токен Docker Hub<a class="headerlink" href="#шаг-1-токен-docker-hub" title="Permanent link">&para;</a></h3>
+<ol>
+<li><a href="https://hub.docker.com">hub.docker.com</a> → аватар → <strong>Account settings</strong> → <strong>Personal access tokens</strong> → <strong>Generate new token</strong>.</li>
+<li><em>Description</em>: <code>jenkins-local</code>; <em>Access permissions</em>: <strong>Read &amp; Write</strong>.</li>
+<li><strong>Generate</strong>, скопируйте токен (показывается один раз).</li>
+</ol>
+<h3 id="шаг-2-подготовить-jenkinsfile-в-своём-fork">Шаг 2. Подготовить Jenkinsfile в своём fork<a class="headerlink" href="#шаг-2-подготовить-jenkinsfile-в-своём-fork" title="Permanent link">&para;</a></h3>
+<p>Pipeline уже лежит в репозитории: <code>project/Jenkinsfile</code>. Откройте его и замените плейсхолдер на свой логин Docker Hub:</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="n">environment</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">IMAGE_NAME</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s1">'devops-bootcamp-backend'</span>
+<span class="w">        </span><span class="n">DOCKER_HUB_REPO</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'alexdev/devops-bootcamp-backend'</span><span class="w">     </span><span class="c1">// ← ваш логин</span>
+<span class="w">    </span><span class="o">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>project/Jenkinsfile
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"ci: set Docker Hub repository"</span>
+git<span class="w"> </span>push
+</code></pre></div>
+<p>Разберите файл целиком:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Что делает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>options</code></td>
+<td>Таймаут 15 минут, хранить 20 последних сборок, не запускать две сборки одновременно</td>
+</tr>
+<tr>
+<td><code>Checkout</code></td>
+<td><code>checkout scm</code> — взять код из репозитория, указанного в настройках job; показать последний коммит</td>
+</tr>
+<tr>
+<td><code>Build</code></td>
+<td><code>docker build</code> с тегами <code>:$BUILD_NUMBER</code> и <code>:latest</code></td>
+</tr>
+<tr>
+<td><code>Test</code></td>
+<td>Smoke test: запустить контейнер, до 10 раз попробовать <code>wget /health</code> внутри него. <code>post { always }</code> удаляет тестовый контейнер даже при падении</td>
+</tr>
+<tr>
+<td><code>Push</code></td>
+<td><code>withCredentials</code> → <code>docker login --password-stdin</code> → <code>tag</code> → <code>push</code> двух тегов → <code>logout</code></td>
+</tr>
+<tr>
+<td><code>post { always }</code></td>
+<td>Удалить образы с агента при любом исходе, чтобы диск не переполнялся</td>
+</tr>
+</tbody>
+</table>
+<p><code>checkout scm</code> берёт адрес репозитория из настроек job, поэтому один и тот же Jenkinsfile работает в любом fork без правок.</p>
+<h3 id="шаг-3-credentials-в-jenkins">Шаг 3. Credentials в Jenkins<a class="headerlink" href="#шаг-3-credentials-в-jenkins" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>devops-handbook/project/jenkins
+docker<span class="w"> </span>compose<span class="w"> </span>start
+</code></pre></div>
+<p><code>http://localhost:9090</code> → <strong>Manage Jenkins</strong> → <strong>Credentials</strong> → <strong>System</strong> → <strong>Global credentials (unrestricted)</strong> → <strong>Add Credentials</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Поле</th>
+<th>Значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Kind</em></td>
+<td>Username with password</td>
+</tr>
+<tr>
+<td><em>Username</em></td>
+<td>ваш логин Docker Hub</td>
+</tr>
+<tr>
+<td><em>Password</em></td>
+<td>токен из шага 1</td>
+</tr>
+<tr>
+<td><em>ID</em></td>
+<td><code>docker-hub-creds</code> — <strong>ровно так</strong>, на этот ID ссылается Jenkinsfile</td>
+</tr>
+<tr>
+<td><em>Description</em></td>
+<td>Docker Hub token for CI</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p>В списке Global credentials есть <code>docker-hub-creds</code>. Пароль в интерфейсе не виден, его можно только заменить.</p>
+</div>
+<h3 id="шаг-4-job-из-репозитория">Шаг 4. Job из репозитория<a class="headerlink" href="#шаг-4-job-из-репозитория" title="Permanent link">&para;</a></h3>
+<p><strong>New Item</strong> → имя <code>devops-handbook</code> → <strong>Pipeline</strong> → <strong>OK</strong>. Раздел <strong>Pipeline</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Поле</th>
+<th>Значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Definition</em></td>
+<td><strong>Pipeline script from SCM</strong></td>
+</tr>
+<tr>
+<td><em>SCM</em></td>
+<td>Git</td>
+</tr>
+<tr>
+<td><em>Repository URL</em></td>
+<td><code>https://github.com/&lt;your-github-user&gt;/devops-handbook.git</code></td>
+</tr>
+<tr>
+<td><em>Credentials</em></td>
+<td>— none — (fork публичный)</td>
+</tr>
+<tr>
+<td><em>Branch Specifier</em></td>
+<td><code>*/main</code></td>
+</tr>
+<tr>
+<td><em>Script Path</em></td>
+<td><code>project/Jenkinsfile</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Save</strong> → <strong>Build Now</strong>.</p>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<ul>
+<li>Stage View: <code>Checkout</code>, <code>Build</code>, <code>Test</code>, <code>Push</code> — зелёные.</li>
+<li>Console Output:<ul>
+<li><code>Checking out git https://github.com/.../devops-handbook.git</code>;</li>
+<li>в <code>Test</code> — <code>{"status":"ok","uptime":…}</code> и <code>Smoke test passed</code>;</li>
+<li>в <code>Push</code> — <code>docker login -u **** --password-stdin</code>, <code>Login Succeeded</code>, затем <code>pushed</code> / digest;</li>
+<li><code>Finished: SUCCESS</code>.</li>
+</ul>
+</li>
+<li>На <a href="https://hub.docker.com">hub.docker.com</a> → <em>Repositories</em> → <code>devops-bootcamp-backend</code> → <em>Tags</em>: <code>1</code> и <code>latest</code>.</li>
+</ul>
+</div>
+<p>Первый <code>Test</code> может напечатать <code>wget: can't connect to remote host: Connection refused</code>: backend ещё стартует. Цикл повторит попытку через секунду, это нормально.</p>
+<h3 id="шаг-5-образ-работает-где-угодно">Шаг 5. Образ работает где угодно<a class="headerlink" href="#шаг-5-образ-работает-где-угодно" title="Permanent link">&para;</a></h3>
+<p>На своём компьютере, не на Jenkins:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>pull<span class="w"> </span>&lt;your-dockerhub-user&gt;/devops-bootcamp-backend:1
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">3000</span>:3000<span class="w"> </span>--name<span class="w"> </span>from-registry<span class="w"> </span>&lt;your-dockerhub-user&gt;/devops-bootcamp-backend:1
+curl<span class="w"> </span>http://localhost:3000/health<span class="w">              </span><span class="c1"># Windows: curl.exe ...</span>
+docker<span class="w"> </span>stop<span class="w"> </span>from-registry
+</code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p><code>/health</code> отвечает. Вы запустили образ, который собрал Jenkins и опубликовал реестр, — ровно так его будут скачивать сервер в главе 14 и Kubernetes в главе 15.</p>
+</div>
+<h3 id="шаг-6-сборка-по-коммиту">Шаг 6. Сборка по коммиту<a class="headerlink" href="#шаг-6-сборка-по-коммиту" title="Permanent link">&para;</a></h3>
+<p>Включите Poll SCM: <strong>devops-handbook → Configure → Triggers</strong> → ✅ <strong>Poll SCM</strong> → <em>Schedule</em>: <code>H/5 * * * *</code> → <strong>Save</strong>.</p>
+<p>Сделайте любой коммит в fork. Код приложения менять не нужно, подойдёт строка в <code>README.md</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>README.md
+git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">"docs: trigger CI"</span>
+git<span class="w"> </span>push
+</code></pre></div>
+<p>В течение 5 минут появится сборка <code>#2</code>. Её причина — на странице сборки: <em>Started by an SCM change</em>. Что Jenkins увидел при опросе, показывает <strong>Polling Log</strong> в меню job.</p>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p>Сборка <code>#2</code> запустилась сама, на Docker Hub появился тег <code>2</code>, а <code>latest</code> теперь указывает на него (одинаковый digest у <code>2</code> и <code>latest</code>).</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Триггер в самом Jenkinsfile</p>
+<p>Расписание можно описать в коде, а не в настройках job: <code>triggers { pollSCM('H/5 * * * *') }</code> внутри <code>pipeline { }</code>. Тогда оно тоже версионируется. Jenkins применит его после первой сборки с таким Jenkinsfile.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title"><code>[skip ci]</code> в сообщении коммита</p>
+<p>Во многих CI-системах коммит с <code>[skip ci]</code> не запускает сборку. В Jenkins это <strong>не работает из коробки</strong>: нужен плагин (например, <em>SCM Skip</em>) или собственная проверка в pipeline. В GitHub Actions и GitLab CI это встроено.</p>
+</div>
+<h3 id="шаг-7-откат-на-предыдущую-версию">Шаг 7. Откат на предыдущую версию<a class="headerlink" href="#шаг-7-откат-на-предыдущую-версию" title="Permanent link">&para;</a></h3>
+<p>Представьте, что сборка <code>#2</code> сломала приложение. Предыдущая версия по-прежнему в реестре:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">3000</span>:3000<span class="w"> </span>--name<span class="w"> </span>rollback<span class="w"> </span>&lt;your-dockerhub-user&gt;/devops-bootcamp-backend:1
+curl<span class="w"> </span>http://localhost:3000/health
+docker<span class="w"> </span>stop<span class="w"> </span>rollback
+</code></pre></div>
+<p>Именно для этого нужны неизменяемые теги: откат — это запуск конкретного предыдущего тега, а не пересборка.</p>
+<h3 id="шаг-8-уборка">Шаг 8. Уборка<a class="headerlink" href="#шаг-8-уборка" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>image<span class="w"> </span>rm<span class="w"> </span>&lt;your-dockerhub-user&gt;/devops-bootcamp-backend:1<span class="w"> </span>&lt;your-dockerhub-user&gt;/devops-bootcamp-backend:2<span class="w"> </span><span class="m">2</span>&gt;/dev/null
+<span class="nb">cd</span><span class="w"> </span>devops-handbook/project/jenkins
+docker<span class="w"> </span>compose<span class="w"> </span>stop
+</code></pre></div>
+<p>Отключите Poll SCM (<strong>Configure → Triggers</strong>), если Jenkins будет запущен, а сборки не нужны.</p>
+<p>Образы на Docker Hub <strong>оставьте</strong>: они понадобятся в главах 14–15. Токен <code>jenkins-local</code> можно отозвать на Docker Hub, когда Jenkins больше не нужен.</p>
+<div class="admonition success">
+<p class="admonition-title">✅ Проверь себя</p>
+<p><code>docker compose ps -a</code> → <code>jenkins Exited</code>. На Docker Hub теги <code>1</code>, <code>2</code>, <code>latest</code> на месте.</p>
+</div>
+<h2 id="вопросы-для-самопроверки">Вопросы для самопроверки<a class="headerlink" href="#вопросы-для-самопроверки" title="Permanent link">&para;</a></h2>
+<details>
+<summary>1. Зачем два тега — <code>:BUILD_NUMBER</code> и <code>:latest</code>? Что будет, если оставить только <code>latest</code>?</summary>
+<p><code>latest</code> перезаписывается каждой сборкой. Только с ним нельзя понять, какая версия где развёрнута, и нельзя откатиться: предыдущего образа под понятным именем больше нет. Номер сборки — неизменяемая версия, которую можно найти в Jenkins, связать с коммитом и развернуть снова.</p>
+</details>
+<details>
+<summary>2. Stage <code>Cleanup</code> (или <code>post { always }</code>) удалил образ. Удалён ли он с Docker Hub?</summary>
+<p>Нет. <code>docker rmi</code> удаляет образ только с машины, где выполняется команда, то есть с агента Jenkins. В реестре копия остаётся. Удаляют локально, чтобы агент не забил диск: образ backend весит сотни мегабайт, а сборок десятки в день.</p>
+</details>
+<details>
+<summary>3. Почему внутри <code>withCredentials</code> пишут <code>sh '''...$DOCKER_PASS...'''</code>, а не <code>sh """...${DOCKER_PASS}..."""</code>?</summary>
+<p>С <code>"""</code> Groovy подставит пароль в текст скрипта до запуска shell. Пароль попадёт в аргументы процесса и во временный файл скрипта, может утечь в лог. С <code>'''</code> скрипт передаётся как есть, а значение shell берёт из переменной окружения, которую Jenkins выставляет только на время блока и маскирует в выводе.</p>
+</details>
+<details>
+<summary>4. Почему для локального Jenkins работает Poll SCM, но не работает webhook?</summary>
+<p>Webhook — это HTTP-запрос <strong>от GitHub к Jenkins</strong>. Jenkins на <code>localhost</code> недоступен из интернета, GitHub до него не достучится. Poll SCM работает наоборот: Jenkins сам ходит в GitHub, а исходящие запросы с вашего компьютера разрешены. Для webhook нужен Jenkins с публичным адресом (или туннель).</p>
+</details>
+<details>
+<summary>5. Почему токен Docker Hub лучше пароля от аккаунта?</summary>
+<p>Токен можно ограничить по правам (только чтение, чтение и запись), выдать отдельно для каждой системы, отозвать, не меняя пароль и не ломая остальные интеграции. В логах Docker Hub видно, каким токеном пользовались. Пароль даёт полный доступ к аккаунту, включая настройки и удаление репозиториев.</p>
+</details>
+<h2 id="итоги">Итоги<a class="headerlink" href="#итоги" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[x] <code>Jenkinsfile</code> живёт в репозитории, job читает его через <em>Pipeline script from SCM</em></li>
+<li>[x] Образ публикуется в реестр с тегами <code>:BUILD_NUMBER</code> и <code>:latest</code>; в продакшене — только неизменяемые теги</li>
+<li>[x] Секреты — в Jenkins Credentials, в pipeline — через <code>withCredentials</code> и <code>sh '''</code></li>
+<li>[x] <code>--password-stdin</code> вместо <code>-p</code>, токен вместо пароля</li>
+<li>[x] Smoke test проверяет, что контейнер реально отвечает</li>
+<li>[x] Poll SCM для локального Jenkins, webhook — для публичного</li>
+</ul>
+<p><strong>Что дальше.</strong> Образ лежит в реестре и ждёт, когда его развернут. В <a href="../13-ansible-basics/">главе 13</a> появится Ansible — инструмент, который настраивает серверы по описанию, а в главе 14 он развернёт этот образ на EC2.</p>
+<ul>
+<li>📋 <a href="commands/">Шпаргалка</a></li>
+<li>🏋️ <a href="exercises/">Задания к главе</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Нижний колонтитул" >
+        
+          
+          <a href="../11-jenkins/exercises/" class="md-footer__link md-footer__link--prev" aria-label="Назад: Задания">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Назад
+              </span>
+              <div class="md-ellipsis">
+                Задания
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="commands/" class="md-footer__link md-footer__link--next" aria-label="Вперед: Шпаргалка">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Вперед
+              </span>
+              <div class="md-ellipsis">
+                Шпаргалка
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.indexes", "navigation.footer", "navigation.top", "content.code.copy", "content.tabs.link", "search.highlight"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>
