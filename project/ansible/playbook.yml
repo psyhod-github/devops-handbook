@@ -1,0 +1,44 @@
+---
+# Глава 13 — первый плейбук: nginx на EC2
+#
+# Запуск:
+#   ansible-playbook playbook.yml
+#   ansible-playbook playbook.yml -e "server_env=staging"
+
+- name: Настроить веб-сервер
+  hosts: web
+  become: true
+  vars:
+    app_name: "DevOps Handbook"
+    server_env: "production"
+
+  tasks:
+    - name: Установить nginx
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+
+    - name: Создать страницу
+      ansible.builtin.copy:
+        content: |
+          <!DOCTYPE html>
+          <html lang="ru">
+          <head><meta charset="UTF-8"><title>{{ app_name }}</title></head>
+          <body style="font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 2rem;">
+            <h1>{{ app_name }}</h1>
+            <p>Среда: {{ server_env }}</p>
+            <p>Сервер: {{ ansible_facts['hostname'] }}</p>
+            <p>ОС: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}</p>
+            <p>Настроено через Ansible</p>
+          </body>
+          </html>
+        dest: /usr/share/nginx/html/index.html
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Запустить и включить nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

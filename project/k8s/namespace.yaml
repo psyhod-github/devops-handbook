@@ -1,0 +1,5 @@
+# Главы 15–18. Порядок применения: kubectl apply -f project/k8s/
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bootcamp

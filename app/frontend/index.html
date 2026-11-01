@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DevOps Bootcamp</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: monospace;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container { text-align: center; padding: 2rem; }
+    h1 { font-size: 2rem; color: #58a6ff; margin-bottom: 0.5rem; }
+    .arch { color: #8b949e; margin-bottom: 2.5rem; font-size: 0.9rem; }
+    .counter { font-size: 6rem; font-weight: bold; color: #3fb950; margin: 1rem 0; }
+    .label { color: #8b949e; font-size: 0.85rem; margin-bottom: 1.5rem; }
+    button {
+      background: #238636;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-family: monospace;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover { background: #2ea043; }
+    .info { margin-top: 2rem; font-size: 0.75rem; color: #484f58; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DevOps Bootcamp</h1>
+    <p class="arch">nginx → backend → redis</p>
+
+    <div class="counter" id="hits">—</div>
+    <div class="label">total hits</div>
+
+    <button onclick="hit()">Hit me!</button>
+
+    <div class="info" id="info"></div>
+  </div>
+
+  <script>
+    async function hit() {
+      const res = await fetch('/api/hits');
+      const data = await res.json();
+      document.getElementById('hits').textContent = data.hits;
+    }
+
+    async function loadInfo() {
+      const res = await fetch('/info');
+      const data = await res.json();
+      document.getElementById('info').textContent =
+        `hostname: ${data.hostname} | version: ${data.version}`;
+    }
+
+    loadInfo();
+    hit();
+  </script>
+</body>
+</html>

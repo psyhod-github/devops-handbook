@@ -1,0 +1,29 @@
+---
+# Глава 14 — деплой стека (nginx + backend + redis) на EC2
+#
+# Подготовка (один раз):
+#   ansible-galaxy collection install -r requirements.yml
+#   в group_vars/web.yml укажите свой docker_hub_user
+#
+# Запуск:
+#   ansible-playbook site.yml                      # установка + деплой
+#   ansible-playbook site.yml -e "app_version=42"  # конкретная версия образа
+#   ansible-playbook site.yml --tags deploy        # только деплой (Docker уже есть)
+#   ansible-playbook site.yml --check --diff       # что изменится, без применения
+
+- name: Деплой devops-handbook на EC2
+  hosts: web
+  become: true
+
+  pre_tasks:
+    - name: Проверить, что задан логин Docker Hub
+      ansible.builtin.assert:
+        that:
+          - docker_hub_user is defined
+          - not docker_hub_user.startswith('<')
+        fail_msg: "Укажите свой docker_hub_user в group_vars/web.yml или через -e"
+      tags: always
+
+  roles:
+    - docker   # устанавливает Docker Engine и плагин Compose
+    - app      # раскладывает файлы и запускает стек

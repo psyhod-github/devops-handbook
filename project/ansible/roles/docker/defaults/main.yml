@@ -1,0 +1,7 @@
+---
+# Версия плагина Docker Compose (github.com/docker/compose/releases)
+docker_compose_version: "v5.6.1"
+docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ ansible_facts['architecture'] }}"
+# Пользователи, которым можно работать с Docker без sudo
+docker_users:
+  - ec2-user

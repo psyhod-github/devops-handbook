@@ -1,0 +1,20 @@
+# Глава 16. Нужен Ingress Controller: minikube addons enable ingress (ingress-nginx).
+# Проект ingress-nginx выведен из поддержки — новые установки переходят на Gateway API.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bootcamp-ingress
+  namespace: bootcamp
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: bootcamp.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 3000

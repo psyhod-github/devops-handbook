@@ -1,0 +1,40 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Terraform
+# .terraform.lock.hcl НЕ игнорируем — его нужно коммитить (фиксирует версии провайдеров)
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+terraform.tfvars
+*.auto.tfvars
+!terraform.tfvars.example
+
+# Secrets — никогда не коммитить
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+
+# Ansible — реальные IP серверов
+inventory.ini
+
+# MkDocs
+site/
+.cache/
+
+# Python
+.venv/
+__pycache__/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log

@@ -1,0 +1,24 @@
+#!/bin/bash
+# Выполняется один раз, при первом запуске инстанса, от root.
+# Лог: /var/log/cloud-init-output.log
+# Шаблон Terraform: $${name} и $${message} подставляет templatefile(); $(...) и $VAR — это bash.
+set -euxo pipefail
+
+dnf install -y nginx
+
+TOKEN=$(curl -s -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 300")
+INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+
+cat > /usr/share/nginx/html/index.html <<HTML
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>${name}</title></head>
+<body style="font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 2rem;">
+  <h1>${message}</h1>
+  <p>instance: $INSTANCE_ID</p>
+  <p>deployed by Terraform + User Data at $(date -u +%FT%TZ)</p>
+</body>
+</html>
+HTML
+
+systemctl enable --now nginx

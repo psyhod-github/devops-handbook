@@ -1,0 +1,13 @@
+---
+# Handler запускается, только если задача с notify вернула changed,
+# и ровно один раз в конце play — сколько бы задач его ни вызвали.
+#
+# Почему нужен перезапуск: copy заменяет файл новым (другой inode), а bind mount
+# одиночного файла продолжает показывать контейнеру старый — до перезапуска контейнера.
+
+- name: Restart nginx
+  community.docker.docker_compose_v2:
+    project_src: "{{ app_dir }}"
+    services:
+      - nginx
+    state: restarted

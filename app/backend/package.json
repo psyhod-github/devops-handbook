@@ -1,0 +1,14 @@
+{
+  "name": "devops-bootcamp-backend",
+  "version": "1.0.0",
+  "description": "DevOps Bootcamp — backend service",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "redis": "^4.6.7",
+    "prom-client": "^15.1.0"
+  }
+}

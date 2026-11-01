@@ -1,0 +1,144 @@
+site_name: DevOps Handbook
+site_description: DevOps с нуля — пособие для самостоятельного изучения
+# site_url: https://<your-github-user>.github.io/devops-handbook/
+# repo_url: https://github.com/<your-github-user>/devops-handbook
+
+docs_dir: docs
+
+validation:
+  anchors: warn
+
+theme:
+  name: material
+  language: ru
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - navigation.footer
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Тёмная тема
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Светлая тема
+
+plugins:
+  - search:
+      lang: [ru, en]
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Главная: index.md
+  - "00 · Подготовка":
+      - 00-setup/README.md
+      - Шпаргалка: 00-setup/commands.md
+      - Задания: 00-setup/exercises.md
+  - Основы и AWS:
+      - "01 · Что такое DevOps":
+          - 01-devops-intro/README.md
+          - Шпаргалка: 01-devops-intro/commands.md
+          - Задания: 01-devops-intro/exercises.md
+      - "02 · AWS: VPC и EC2":
+          - 02-aws-vpc-ec2/README.md
+          - Шпаргалка: 02-aws-vpc-ec2/commands.md
+          - Задания: 02-aws-vpc-ec2/exercises.md
+      - "03 · AWS CLI и жизненный цикл EC2":
+          - 03-aws-cli-ec2/README.md
+          - Шпаргалка: 03-aws-cli-ec2/commands.md
+          - Задания: 03-aws-cli-ec2/exercises.md
+      - "04 · IAM: пользователи и политики":
+          - 04-iam-users-policies/README.md
+          - Шпаргалка: 04-iam-users-policies/commands.md
+          - Задания: 04-iam-users-policies/exercises.md
+      - "05 · IAM: роли и instance profile":
+          - 05-iam-roles/README.md
+          - Шпаргалка: 05-iam-roles/commands.md
+          - Задания: 05-iam-roles/exercises.md
+  - Terraform:
+      - "06 · Terraform: введение":
+          - 06-terraform-intro/README.md
+          - Шпаргалка: 06-terraform-intro/commands.md
+          - Задания: 06-terraform-intro/exercises.md
+      - "07 · Remote state и модули":
+          - 07-terraform-state-modules/README.md
+          - Шпаргалка: 07-terraform-state-modules/commands.md
+          - Задания: 07-terraform-state-modules/exercises.md
+      - "08 · User Data и проект":
+          - 08-terraform-userdata/README.md
+          - Шпаргалка: 08-terraform-userdata/commands.md
+          - Задания: 08-terraform-userdata/exercises.md
+  - Контейнеры и CI:
+      - "09 · Docker":
+          - 09-docker/README.md
+          - Шпаргалка: 09-docker/commands.md
+          - Задания: 09-docker/exercises.md
+      - "10 · Docker Compose":
+          - 10-docker-compose/README.md
+          - Шпаргалка: 10-docker-compose/commands.md
+          - Задания: 10-docker-compose/exercises.md
+      - "11 · Jenkins":
+          - 11-jenkins/README.md
+          - Шпаргалка: 11-jenkins/commands.md
+          - Задания: 11-jenkins/exercises.md
+      - "12 · Jenkins + Docker":
+          - 12-jenkins-docker/README.md
+          - Шпаргалка: 12-jenkins-docker/commands.md
+          - Задания: 12-jenkins-docker/exercises.md
+  - Ansible:
+      - "13 · Ansible: основы":
+          - 13-ansible-basics/README.md
+          - Шпаргалка: 13-ansible-basics/commands.md
+          - Задания: 13-ansible-basics/exercises.md
+      - "14 · Роли и деплой":
+          - 14-ansible-roles-deploy/README.md
+          - Шпаргалка: 14-ansible-roles-deploy/commands.md
+          - Задания: 14-ansible-roles-deploy/exercises.md
+  - Kubernetes:
+      - "15 · Pod и Deployment":
+          - 15-k8s-pods-deployments/README.md
+          - Шпаргалка: 15-k8s-pods-deployments/commands.md
+          - Задания: 15-k8s-pods-deployments/exercises.md
+      - "16 · Service и Ingress":
+          - 16-k8s-services-ingress/README.md
+          - Шпаргалка: 16-k8s-services-ingress/commands.md
+          - Задания: 16-k8s-services-ingress/exercises.md
+      - "17 · ConfigMap, Secret, RBAC":
+          - 17-k8s-config-secrets-rbac/README.md
+          - Шпаргалка: 17-k8s-config-secrets-rbac/commands.md
+          - Задания: 17-k8s-config-secrets-rbac/exercises.md
+      - "18 · HPA":
+          - 18-k8s-hpa/README.md
+          - Шпаргалка: 18-k8s-hpa/commands.md
+          - Задания: 18-k8s-hpa/exercises.md
+  - Справочник:
+      - Типичные ошибки: troubleshooting.md
+      - Глоссарий: glossary.md

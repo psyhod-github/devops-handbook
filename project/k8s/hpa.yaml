@@ -1,0 +1,22 @@
+# Глава 18. Нужен metrics-server (minikube addons enable metrics-server)
+# и resources.requests.cpu у контейнера — проценты считаются от request.
+# Scale-down по умолчанию ждёт 5 минут (stabilizationWindowSeconds: 300).
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+  namespace: bootcamp
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50

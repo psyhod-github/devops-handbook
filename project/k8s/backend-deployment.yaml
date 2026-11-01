@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: bootcamp
+spec:
+  # replicas не указан: числом подов управляет HPA (hpa.yaml, глава 18).
+  # С replicas каждый kubectl apply сбрасывал бы масштаб к значению из файла.
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: backend-sa        # глава 17: RBAC
+      containers:
+        - name: backend
+          # Образ из главы 12, неизменяемый тег (номер сборки Jenkins).
+          # Без Docker Hub: minikube image build -t devops-bootcamp-backend:local app/backend
+          image: <your-dockerhub-user>/devops-bootcamp-backend:1
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: backend-config        # глава 17: ConfigMap
+          env:
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret      # глава 17: Secret
+                  key: REDIS_URL
+          resources:                        # глава 18: нужно для HPA
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5

@@ -1,0 +1,99 @@
+// Главы 11–12 — CI pipeline: собрать образ backend, проверить, опубликовать на Docker Hub.
+// Job: Pipeline script from SCM → этот репозиторий → Script Path: project/Jenkinsfile
+// Credentials: "docker-hub-creds" (Username with password, пароль = Access Token Docker Hub)
+
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME      = 'devops-bootcamp-backend'
+        DOCKER_HUB_REPO = '<your-dockerhub-user>/devops-bootcamp-backend'
+    }
+
+    options {
+        timeout(time: 15, unit: 'MINUTES')               // зависший билд не будет висеть вечно
+        buildDiscarder(logRotator(numToKeepStr: '20'))   // хранить только 20 последних сборок
+        disableConcurrentBuilds()                        // одна сборка за раз
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'git log -1 --oneline'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '''
+                    docker build \
+                      -t "$IMAGE_NAME:$BUILD_NUMBER" \
+                      -t "$IMAGE_NAME:latest" \
+                      ./app/backend
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Smoke test: контейнер стартует и отвечает на /health
+                sh '''
+                    docker run -d --name "smoke-$BUILD_NUMBER" "$IMAGE_NAME:$BUILD_NUMBER"
+                    for i in $(seq 1 10); do
+                      if docker exec "smoke-$BUILD_NUMBER" wget -qO- http://localhost:3000/health; then
+                        echo
+                        echo "Smoke test passed"
+                        exit 0
+                      fi
+                      sleep 1
+                    done
+                    echo "Smoke test failed"
+                    docker logs "smoke-$BUILD_NUMBER"
+                    exit 1
+                '''
+            }
+            post {
+                always {
+                    sh 'docker rm -f "smoke-$BUILD_NUMBER" || true'
+                }
+            }
+        }
+
+        stage('Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    // Одинарные кавычки: пароль подставляет shell, Jenkins маскирует его в логе
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker tag "$IMAGE_NAME:$BUILD_NUMBER" "$DOCKER_HUB_REPO:$BUILD_NUMBER"
+                        docker tag "$IMAGE_NAME:latest"       "$DOCKER_HUB_REPO:latest"
+                        docker push "$DOCKER_HUB_REPO:$BUILD_NUMBER"
+                        docker push "$DOCKER_HUB_REPO:latest"
+                        docker logout
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Удаляем образы с агента при любом исходе — иначе диск закончится
+            sh '''
+                docker rmi "$IMAGE_NAME:$BUILD_NUMBER" "$IMAGE_NAME:latest" \
+                           "$DOCKER_HUB_REPO:$BUILD_NUMBER" "$DOCKER_HUB_REPO:latest" || true
+            '''
+        }
+        success {
+            echo "Build #${env.BUILD_NUMBER}: ${env.DOCKER_HUB_REPO}:${env.BUILD_NUMBER} pushed"
+        }
+        failure {
+            echo "Build #${env.BUILD_NUMBER} failed — see Console Output"
+        }
+    }
+}

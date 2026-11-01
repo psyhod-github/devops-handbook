@@ -1,0 +1,50 @@
+---
+# Роль app: файлы стека + docker compose up
+
+- name: Создать директорию приложения
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: deploy
+
+- name: Скопировать nginx.conf и index.html
+  ansible.builtin.copy:
+    src: "{{ app_frontend_dir }}/{{ item }}"
+    dest: "{{ app_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - nginx.conf
+    - index.html
+  notify: Restart nginx
+  tags: deploy
+
+- name: Сгенерировать docker-compose.yml из шаблона
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ app_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  tags: deploy
+
+- name: Запустить стек (docker compose up -d)
+  community.docker.docker_compose_v2:
+    project_src: "{{ app_dir }}"
+    state: present
+    pull: missing
+  tags: deploy
+
+- name: Проверить, что приложение отвечает
+  ansible.builtin.uri:
+    url: http://localhost/health
+    status_code: 200
+  register: app_health
+  retries: 10
+  delay: 3
+  until: app_health.status == 200
+  tags: deploy

@@ -1,0 +1,6 @@
+---
+# Значения по умолчанию — самый низкий приоритет, перекрываются group_vars и -e
+app_dir: /opt/devops-handbook
+app_version: "latest"
+# Файлы фронтенда берём прямо из app/ репозитория — одна копия, без дублей в роли
+app_frontend_dir: "{{ playbook_dir }}/../../app/frontend"

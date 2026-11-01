@@ -1,0 +1,43 @@
+---
+# Роль docker: Docker Engine + плагин Compose v2 на Amazon Linux 2023
+# Docker есть в стандартном репозитории AL2023, а плагина Compose там нет — ставим файл из релизов.
+
+- name: Установить Docker
+  ansible.builtin.dnf:
+    name: docker
+    state: present
+  tags: install
+
+- name: Создать папку для CLI-плагинов Docker
+  ansible.builtin.file:
+    path: /usr/local/lib/docker/cli-plugins
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: install
+
+- name: Установить плагин Docker Compose {{ docker_compose_version }}
+  ansible.builtin.get_url:
+    url: "{{ docker_compose_url }}"
+    checksum: "sha256:{{ docker_compose_url }}.sha256"   # проверка контрольной суммы из релиза
+    dest: /usr/local/lib/docker/cli-plugins/docker-compose
+    owner: root
+    group: root
+    mode: "0755"
+  tags: install
+
+- name: Запустить и включить Docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  tags: install
+
+- name: Добавить пользователей в группу docker
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  loop: "{{ docker_users }}"
+  tags: install

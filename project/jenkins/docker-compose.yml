@@ -1,0 +1,27 @@
+# Глава 11 — Jenkins локально.
+#
+# Запуск из папки project/jenkins/:
+#   docker compose up -d --build
+#   открыть http://localhost:9090
+#
+# Порт 9090, а не 8080: 8080 занят стеком из главы 10.
+
+name: jenkins
+
+services:
+  jenkins:
+    build: .
+    image: jenkins-docker:lts
+    restart: unless-stopped
+    ports:
+      - "9090:8080"     # веб-интерфейс
+    volumes:
+      - jenkins_home:/var/jenkins_home                  # jobs, плагины, credentials
+      - /var/run/docker.sock:/var/run/docker.sock       # Docker хоста
+    group_add:
+      # Группа-владелец сокета, чтобы пользователь jenkins мог им пользоваться.
+      # Docker Desktop (Windows/macOS): 0. Linux: getent group docker | cut -d: -f3
+      - "${DOCKER_GID:-0}"
+
+volumes:
+  jenkins_home:

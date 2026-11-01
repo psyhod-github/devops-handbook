@@ -1,0 +1,4 @@
+---
+# Переменные для всех серверов группы [web]
+docker_hub_user: "<your-dockerhub-user>"   # ваш логин Docker Hub (образ из главы 12)
+app_version: "latest"                      # лучше конкретный номер сборки: -e "app_version=42"
