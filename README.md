@@ -3,7 +3,7 @@
 Бесплатное пособие для самостоятельного изучения DevOps. Подходит тем, кто начинает с нуля.
 Вы шаг за шагом обвешиваете одно небольшое веб-приложение инфраструктурой: облако AWS, Terraform, Docker, CI на Jenkins, Ansible, Kubernetes.
 
-📖 **Читать как сайт:** `https://<your-github-user>.github.io/devops-handbook/`. Там есть поиск, тёмная тема и вкладки Windows / macOS / Linux.
+📖 **Читать как сайт:** `https://psyhod-github.github.io/devops-handbook/`. Там есть поиск, тёмная тема и вкладки Windows / macOS / Linux.
 
 ## Учебный проект
 

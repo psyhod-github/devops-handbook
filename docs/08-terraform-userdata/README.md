@@ -8,7 +8,7 @@
     - [Глава 07](../07-terraform-state-modules/README.md): бакет `tf-state-<account-id>`, политика `terraform-state-access`, модуль `modules/ec2`.
     - Задание второго уровня из [главы 02](../02-aws-vpc-ec2/exercises.md) — если делали, сравните, сколько ручных шагов исчезнет.
 
-    **Эталон:** готовый код этой главы лежит в репозитории пособия в [`project/terraform/`](https://github.com/<your-github-user>/devops-handbook/tree/main/project/terraform).
+    **Эталон:** готовый код этой главы лежит в репозитории пособия в [`project/terraform/`](https://github.com/psyhod-github/devops-handbook/tree/main/project/terraform).
 
     **Стоимость:** EC2 `t3.micro` на время практики — центы. В конце — `terraform destroy`.
 

@@ -1,7 +1,7 @@
 site_name: DevOps Handbook
 site_description: DevOps с нуля — пособие для самостоятельного изучения
-# site_url: https://<your-github-user>.github.io/devops-handbook/
-# repo_url: https://github.com/<your-github-user>/devops-handbook
+site_url: https://psyhod-github.github.io/devops-handbook/
+repo_url: https://github.com/psyhod-github/devops-handbook
 
 docs_dir: docs
 
